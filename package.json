@@ -1,0 +1,15 @@
+{
+  "name": "appteste",
+  "version": "0.1.0",
+  "description": "Estrutura base para uma aplicação Electron pronta para desenvolvimento.",
+  "main": "src/main.js",
+  "author": "",
+  "license": "MIT",
+  "scripts": {
+    "start": "electron .",
+    "test": "node ./tests/auth.test.js"
+  },
+  "devDependencies": {
+    "electron": "^29.3.0"
+  }
+}

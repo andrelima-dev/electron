@@ -1,0 +1,9 @@
+{
+  "authProvider": "local",
+  "api": {
+    "baseUrl": "http://localhost:3000",
+    "validatePath": "/api/v1/advogados/validar",
+    "healthPath": "/health",
+    "timeout": 8000
+  }
+}

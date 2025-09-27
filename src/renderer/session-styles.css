@@ -1,0 +1,308 @@
+:root {
+  color-scheme: dark;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  background-color: #0b1120;
+  color: #f8fafc;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: linear-gradient(135deg, #0b1120, #1e293b);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.session-container {
+  width: min(500px, 100%);
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.85));
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 20px;
+  box-shadow: 0 20px 40px rgba(2, 6, 23, 0.6);
+  overflow: hidden;
+}
+
+.session-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 20px 25px;
+  background: rgba(30, 41, 59, 0.6);
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.session-logo img {
+  height: 40px;
+  width: auto;
+  filter: brightness(1.1);
+}
+
+.session-info {
+  flex: 1;
+  margin-left: 15px;
+}
+
+.session-info h1 {
+  margin: 0;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #f8fafc;
+}
+
+.user-details {
+  display: flex;
+  gap: 15px;
+  margin-top: 5px;
+  font-size: 0.85rem;
+  color: rgba(226, 232, 240, 0.8);
+}
+
+.session-controls {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+.control-btn {
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 6px;
+  font-size: 1.2rem;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.control-btn.minimize {
+  background: rgba(59, 130, 246, 0.8);
+  color: white;
+}
+
+.control-btn.minimize:hover {
+  background: rgba(59, 130, 246, 1);
+  transform: translateY(-1px);
+}
+
+.control-btn.close {
+  background: rgba(239, 68, 68, 0.8);
+  color: white;
+  font-size: 0.75rem;
+  width: auto;
+  padding: 0 12px;
+}
+
+.control-btn.close:hover {
+  background: rgba(239, 68, 68, 1);
+  transform: translateY(-1px);
+}
+
+.session-main {
+  padding: 30px 25px;
+  display: grid;
+  gap: 25px;
+}
+
+.timer-section {
+  text-align: center;
+}
+
+.timer-display h2 {
+  margin: 0 0 15px 0;
+  font-size: 1.3rem;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.timer {
+  font-size: 3rem;
+  font-weight: 700;
+  color: #38bdf8;
+  text-shadow: 0 0 20px rgba(56, 189, 248, 0.3);
+  margin: 10px 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.timer-type {
+  font-size: 0.9rem;
+  color: rgba(226, 232, 240, 0.7);
+  margin-top: 10px;
+}
+
+.progress-bar {
+  width: 100%;
+  height: 8px;
+  background: rgba(30, 41, 59, 0.8);
+  border-radius: 10px;
+  overflow: hidden;
+  margin-top: 20px;
+  box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #38bdf8, #0ea5e9);
+  border-radius: 10px;
+  width: 100%;
+  transition: width 1s ease;
+  box-shadow: 0 0 10px rgba(56, 189, 248, 0.4);
+}
+
+.session-status {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  background: rgba(34, 197, 94, 0.1);
+  border: 1px solid rgba(34, 197, 94, 0.3);
+  border-radius: 12px;
+  color: #bbf7d0;
+  font-weight: 600;
+}
+
+.status-icon {
+  font-size: 1.2rem;
+}
+
+.session-status.warning {
+  background: rgba(245, 158, 11, 0.1);
+  border-color: rgba(245, 158, 11, 0.3);
+  color: #fcd34d;
+}
+
+.session-status.critical {
+  background: rgba(239, 68, 68, 0.1);
+  border-color: rgba(239, 68, 68, 0.3);
+  color: #fecdd3;
+}
+
+/* Modal Styles */
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.8);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.modal-overlay.show {
+  display: flex;
+}
+
+.modal {
+  background: linear-gradient(160deg, rgba(15, 23, 42, 0.98), rgba(30, 41, 59, 0.95));
+  border: 1px solid rgba(148, 163, 184, 0.3);
+  border-radius: 16px;
+  padding: 0;
+  min-width: 350px;
+  max-width: 90vw;
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.8);
+  animation: modalSlide 0.3s ease-out;
+}
+
+@keyframes modalSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-20px) scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.modal-header {
+  padding: 20px 25px 15px;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.1);
+}
+
+.modal-header h3 {
+  margin: 0;
+  font-size: 1.2rem;
+  color: #f8fafc;
+}
+
+.modal-body {
+  padding: 20px 25px;
+}
+
+.modal-body p {
+  margin: 0;
+  line-height: 1.6;
+  color: rgba(226, 232, 240, 0.9);
+}
+
+.modal-actions {
+  padding: 15px 25px 20px;
+  display: flex;
+  justify-content: center;
+}
+
+.btn-primary {
+  padding: 10px 24px;
+  background: linear-gradient(135deg, #38bdf8, #0ea5e9);
+  border: none;
+  border-radius: 8px;
+  color: #0b1120;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 8px 20px rgba(14, 165, 233, 0.4);
+}
+
+/* Minimized state */
+.session-container.minimized {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  width: 280px;
+  z-index: 999;
+}
+
+.session-container.minimized .session-main {
+  display: none;
+}
+
+.session-container.minimized .session-header {
+  padding: 15px 20px;
+}
+
+.session-container.minimized .control-btn.minimize::after {
+  content: '□';
+  font-size: 1rem;
+}
+
+/* Responsive */
+@media (max-width: 640px) {
+  .session-container {
+    width: 100%;
+    margin: 10px;
+  }
+  
+  .timer {
+    font-size: 2.5rem;
+  }
+  
+  .user-details {
+    flex-direction: column;
+    gap: 5px;
+  }
+}

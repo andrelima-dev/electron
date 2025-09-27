@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>App Electron Base</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <main class="login" id="login-screen">
+      <header class="login__header">
+        <div class="login__logo">
+          <img src="./logo-oab.png" alt="Logo OAB" />
+        </div>
+        <h1>Identifique-se para liberar</h1>
+        <p>Informe seus dados profissionais. O acesso será liberado automaticamente após validação.</p>
+      </header>
+
+      <form class="login__form" id="unlock-form" autocomplete="off" novalidate>
+        <div class="form-row">
+          <label for="cpf">CPF</label>
+          <input
+            id="cpf"
+            name="cpf"
+            type="text"
+            inputmode="numeric"
+            maxlength="14"
+            placeholder="000.000.000-00"
+            required
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="oab">OAB</label>
+          <input
+            id="oab"
+            name="oab"
+            type="text"
+            maxlength="9"
+            placeholder="UF123456"
+            required
+          />
+        </div>
+
+        <div class="form-row">
+          <label for="birthDate">Data de nascimento</label>
+          <input
+            id="birthDate"
+            name="birthDate"
+            type="date"
+            placeholder="AAAA-MM-DD"
+            required
+          />
+        </div>
+
+        <div class="form-actions">
+          <button type="submit" id="unlock-submit">Entrar</button>
+          <button type="reset" id="unlock-reset" class="ghost">Limpar</button>
+        </div>
+      </form>
+
+      <div class="feedback" id="feedback" role="status" aria-live="polite"></div>
+
+      <p class="login__support">Problemas no acesso? Procure a equipe técnica ou ligue <strong>0800-000-000</strong>.</p>
+    </main>
+
+    <footer class="version">
+      <span id="version">Carregando componentes...</span>
+      <span id="status-summary" class="version__summary"></span>
+    </footer>
+
+    <script src="./renderer.js"></script>
+  </body>
+</html>

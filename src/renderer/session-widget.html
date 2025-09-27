@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Controle de Sessão</title>
+    <link rel="stylesheet" href="./session-widget-styles.css" />
+  </head>
+  <body>
+    <div class="widget-container" id="widget-container">
+      <!-- Expanded State (único estado) -->
+      <div class="widget-expanded" id="widget-expanded">
+        <header class="widget-header">
+          <div class="user-info">
+            <img src="./logo-oab.png" alt="OAB" class="mini-logo" />
+            <div class="user-details">
+              <div class="user-name" id="user-name">Nome do Usuário</div>
+              <div class="user-meta">
+                <span id="user-oab">OAB: -</span> • 
+                <span id="user-type">Advogado</span>
+              </div>
+            </div>
+          </div>
+          <button class="minimize-btn" id="minimize-btn">−</button>
+        </header>
+
+        <main class="widget-main">
+          <div class="timer-section">
+            <div class="timer-display">
+              <div class="timer" id="timer">
+                <span id="hours">03</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+              </div>
+              <div class="timer-type" id="timer-type">Sessão de Advogado</div>
+            </div>
+            
+            <div class="progress-bar">
+              <div class="progress-fill" id="progress-fill"></div>
+            </div>
+          </div>
+
+          <div class="session-actions">
+            <button id="close-session-btn" class="action-btn danger">Encerrar Sessão</button>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- Warning Modal -->
+    <div class="modal-overlay" id="warning-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>⏰ Aviso de Tempo</h3>
+        </div>
+        <div class="modal-body">
+          <p id="warning-message">Sua sessão será encerrada automaticamente em 10 minutos!</p>
+        </div>
+        <div class="modal-actions">
+          <button id="warning-ok" class="btn-primary">Entendi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Session End Modal -->
+    <div class="modal-overlay" id="session-end-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>🔒 Sessão Encerrada</h3>
+        </div>
+        <div class="modal-body">
+          <p>Sua sessão foi encerrada. A máquina voltará ao modo de bloqueio.</p>
+        </div>
+        <div class="modal-actions">
+          <button id="session-end-ok" class="btn-primary">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./session-widget.js"></script>
+  </body>
+</html>

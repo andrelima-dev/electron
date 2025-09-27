@@ -1,0 +1,16 @@
+[
+  {
+    "name": "Dr. João Silva",
+    "cpf": "123.456.789-09",
+    "oab": "SP123456",
+    "birthDate": "1990-01-01",
+    "type": "advogado"
+  },
+  {
+    "name": "Maria Santos",
+    "cpf": "987.654.321-00",
+    "oab": "SP789123",
+    "birthDate": "1995-05-15",
+    "type": "estagiario"
+  }
+]

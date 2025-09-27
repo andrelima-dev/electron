@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sessão Ativa - Sistema OAB</title>
+    <link rel="stylesheet" href="./session-styles.css" />
+  </head>
+  <body>
+    <div class="session-container">
+      <header class="session-header">
+        <div class="session-logo">
+          <img src="./logo-oab.png" alt="Logo OAB" />
+        </div>
+        <div class="session-info">
+          <h1 id="user-name">Nome do Usuário</h1>
+          <div class="user-details">
+            <span id="user-oab">OAB: -</span>
+            <span id="user-type">Tipo: -</span>
+          </div>
+        </div>
+        <div class="session-controls">
+          <button id="minimize-btn" class="control-btn minimize">−</button>
+          <button id="close-session-btn" class="control-btn close">Encerrar Sessão</button>
+        </div>
+      </header>
+
+      <main class="session-main">
+        <div class="timer-section">
+          <div class="timer-display">
+            <h2>Tempo Restante</h2>
+            <div class="timer" id="timer">
+              <span id="hours">03</span>:<span id="minutes">00</span>:<span id="seconds">00</span>
+            </div>
+            <div class="timer-type" id="timer-type">Sessão de Advogado (180 min)</div>
+          </div>
+          
+          <div class="progress-bar">
+            <div class="progress-fill" id="progress-fill"></div>
+          </div>
+        </div>
+
+        <div class="session-status" id="session-status">
+          <div class="status-icon">✓</div>
+          <span>Sessão ativa</span>
+        </div>
+      </main>
+    </div>
+
+    <!-- Modal de Aviso -->
+    <div class="modal-overlay" id="warning-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>⏰ Aviso de Tempo</h3>
+        </div>
+        <div class="modal-body">
+          <p id="warning-message">Sua sessão será encerrada automaticamente em 10 minutos!</p>
+        </div>
+        <div class="modal-actions">
+          <button id="warning-ok" class="btn-primary">Entendi</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Modal de Encerramento -->
+    <div class="modal-overlay" id="session-end-modal">
+      <div class="modal">
+        <div class="modal-header">
+          <h3>🔒 Sessão Encerrada</h3>
+        </div>
+        <div class="modal-body">
+          <p>Sua sessão foi encerrada automaticamente por exceder o tempo limite.</p>
+        </div>
+        <div class="modal-actions">
+          <button id="session-end-ok" class="btn-primary">Voltar ao Login</button>
+        </div>
+      </div>
+    </div>
+
+    <script src="./session.js"></script>
+  </body>
+</html>
