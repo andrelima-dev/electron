@@ -1,0 +1,39 @@
+# Nome do Workflow
+name: CI - Teste e Lint
+
+# Gatilhos (Triggers): Quando o workflow deve rodar
+on:
+  push:
+    branches: [ "main" ] # Roda em pushes para a branch main
+  pull_request:
+    branches: [ "main" ] # Roda em pull requests direcionados para a main
+
+# Tarefas (Jobs) que serão executadas
+jobs:
+  build-and-test:
+    # Sistema Operacional que será usado na máquina virtual
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. Clona o seu repositório para a máquina virtual
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # 2. Configura o ambiente Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20' # Use a versão do Node.js que você usa localmente
+          cache: 'npm' # Habilita o cache para acelerar instalações futuras
+
+      # 3. Instala as dependências do projeto de forma otimizada para CI
+      - name: Instalar dependências
+        run: npm ci
+
+      # 4. Roda o ESLint para verificar a qualidade do código
+      #    (baseado no seu script "lint" no package.json)
+      - name: Rodar Linter
+        run: npm run lint
+        
+      # Futuramente, se você adicionar testes automatizados, você pode
+      # adicionar um passo aqui para rodá-los com `npm test`.
