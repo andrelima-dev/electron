@@ -55,7 +55,7 @@ function normalizeBirthDate(value) {
     return trimmed;
   }
 
-  const matchSlashed = trimmed.match(/^(\d{2})[\/\-](\d{2})[\/\-](\d{4})$/);
+  const matchSlashed = trimmed.match(/^(\d{2})[/-](\d{2})[/-](\d{4})$/);
   if (matchSlashed) {
     const [, day, month, year] = matchSlashed;
     return `${year}-${month}-${day}`;
@@ -88,7 +88,11 @@ function validateBirthDate(value) {
   }
 
   const date = new Date(Date.UTC(year, month - 1, day));
-  if (date.getUTCFullYear() !== year || date.getUTCMonth() + 1 !== month || date.getUTCDate() !== day) {
+  if (
+    date.getUTCFullYear() !== year ||
+    date.getUTCMonth() + 1 !== month ||
+    date.getUTCDate() !== day
+  ) {
     return false;
   }
 
@@ -107,14 +111,18 @@ function loadAuthorizedUsers(filePath = USERS_FILE) {
   try {
     payload = fs.readFileSync(filePath, 'utf8');
   } catch (error) {
-    throw new Error(`Não foi possível ler o arquivo de usuários autorizados em ${filePath}. Detalhes: ${error.message}`);
+    throw new Error(
+      `Não foi possível ler o arquivo de usuários autorizados em ${filePath}. Detalhes: ${error.message}`
+    );
   }
 
   let parsed;
   try {
     parsed = JSON.parse(payload);
   } catch (error) {
-    throw new Error(`O arquivo de usuários autorizados está com JSON inválido. Detalhes: ${error.message}`);
+    throw new Error(
+      `O arquivo de usuários autorizados está com JSON inválido. Detalhes: ${error.message}`
+    );
   }
 
   if (!Array.isArray(parsed)) {
@@ -159,12 +167,14 @@ function findAuthorizedUser(credentials, users) {
   const normalizedOab = normalizeOab(credentials.oab);
   const normalizedBirthDate = normalizeBirthDate(credentials.birthDate);
 
-  return users.find(
-    (user) =>
-      user.cpf === normalizedCpf &&
-      user.oab === normalizedOab &&
-      user.birthDate === normalizedBirthDate
-  ) || null;
+  return (
+    users.find(
+      (user) =>
+        user.cpf === normalizedCpf &&
+        user.oab === normalizedOab &&
+        user.birthDate === normalizedBirthDate
+    ) || null
+  );
 }
 
 function watchAuthorizedUsers(onChange, filePath = USERS_FILE) {

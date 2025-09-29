@@ -192,7 +192,9 @@ document.addEventListener('DOMContentLoaded', () => {
   configureBirthDateInput();
   loadAppContext();
 
-  const unsubscribeContext = window.electron?.onContextUpdated?.((context) => applyContext(context));
+  const unsubscribeContext = window.electron?.onContextUpdated?.((context) =>
+    applyContext(context)
+  );
 
   window.addEventListener('beforeunload', () => {
     if (typeof unsubscribeContext === 'function') {
@@ -210,4 +212,15 @@ document.addEventListener('DOMContentLoaded', () => {
 
   formElement?.addEventListener('submit', handleSubmit);
   resetButton?.addEventListener('click', resetForm);
+  // Hardening: bloquear menu de contexto e atalhos de DevTools
+  document.addEventListener('contextmenu', (e) => e.preventDefault());
+  document.addEventListener('keydown', (e) => {
+    const key = e.key?.toLowerCase();
+    const isDevTools = key === 'f12' || (e.ctrlKey && e.shiftKey && (key === 'i' || key === 'c'));
+    const isViewSource = e.ctrlKey && key === 'u';
+    if (isDevTools || isViewSource) {
+      e.preventDefault();
+      e.stopPropagation();
+    }
+  });
 });
