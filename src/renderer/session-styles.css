@@ -30,10 +30,7 @@ body {
 
 .session-header {
   display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 20px 25px;
-  background: rgba(30, 41, 59, 0.6);
+  /* legacy unused: removed content */
   border-bottom: 1px solid rgba(148, 163, 184, 0.1);
 }
 
@@ -296,11 +293,11 @@ body {
     width: 100%;
     margin: 10px;
   }
-  
+
   .timer {
     font-size: 2.5rem;
   }
-  
+
   .user-details {
     flex-direction: column;
     gap: 5px;

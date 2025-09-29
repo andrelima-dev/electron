@@ -1,10 +1,6 @@
 const { EventEmitter } = require('node:events');
 
-const {
-  loadAppConfig,
-  watchAppConfig,
-  joinUrl
-} = require('../common/config');
+const { loadAppConfig, watchAppConfig, joinUrl } = require('../common/config');
 const {
   loadAuthorizedUsers,
   watchAuthorizedUsers,
@@ -62,7 +58,8 @@ class AuthService extends EventEmitter {
       authProvider: this.state.authProvider,
       authStatus: this.state.authStatus,
       authDetails: this.state.authDetails,
-      apiBaseUrl: this.state.config?.api?.baseUrl || ''
+      apiBaseUrl: this.state.config?.api?.baseUrl || '',
+      session: this.state.config?.session
     };
   }
 
@@ -118,9 +115,10 @@ class AuthService extends EventEmitter {
 
     if (authProvider !== this.state.authProvider) {
       this.state.authProvider = authProvider;
-      this.state.authDetails = authProvider === 'remote'
-        ? 'Utilizando API central de validação.'
-        : 'Utilizando base local de contingência.';
+      this.state.authDetails =
+        authProvider === 'remote'
+          ? 'Utilizando API central de validação.'
+          : 'Utilizando base local de contingência.';
 
       this.state.watchers.users();
       this.state.watchers.users = () => {};
@@ -196,7 +194,11 @@ class AuthService extends EventEmitter {
     this.setStatus('checking', 'Verificando disponibilidade da API…');
 
     try {
-      const response = await fetchWithTimeout(healthUrl, { method: 'GET' }, this.state.config.api?.timeout);
+      const response = await fetchWithTimeout(
+        healthUrl,
+        { method: 'GET' },
+        this.state.config.api?.timeout
+      );
 
       if (!response.ok) {
         throw new Error(`Status ${response.status} ao consultar saúde.`);
@@ -225,14 +227,17 @@ class AuthService extends EventEmitter {
         name: user.name,
         cpf: user.cpf,
         oab: user.oab,
-        type: (user.type === 'estagiario' ? 'estagiario' : 'advogado'),
+        type: user.type === 'estagiario' ? 'estagiario' : 'advogado',
         sessionStartTime: new Date().toISOString()
       }
     };
   }
 
   async authenticateRemote(payload) {
-    const validateUrl = joinUrl(this.state.config.api?.baseUrl, this.state.config.api?.validatePath);
+    const validateUrl = joinUrl(
+      this.state.config.api?.baseUrl,
+      this.state.config.api?.validatePath
+    );
 
     if (!validateUrl) {
       return {
@@ -280,14 +285,18 @@ class AuthService extends EventEmitter {
 
       return {
         success: true,
-        user: data?.user && typeof data.user === 'object' ? { name: data.user.name } : { name: undefined }
+        user:
+          data?.user && typeof data.user === 'object'
+            ? { name: data.user.name }
+            : { name: undefined }
       };
     } catch (error) {
       this.setStatus('offline', `Falha ao comunicar com API: ${error.message}`);
 
       return {
         success: false,
-        error: 'Não foi possível validar as credenciais na API. Tente novamente ou contacte o suporte.'
+        error:
+          'Não foi possível validar as credenciais na API. Tente novamente ou contacte o suporte.'
       };
     }
   }
