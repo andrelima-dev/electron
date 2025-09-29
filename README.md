@@ -76,8 +76,6 @@ O script `start` abre a janela principal com o formulário de liberação. Em de
 ### Como sair do modo quiosque
 
 - **Windows**: `Alt + F4` (se permitido), `Ctrl + Alt + Del` para finalizar o processo manualmente ou autentique-se com um usuário autorizado.
-- **macOS/Linux**: utilize `Cmd/Ctrl + Q` enquanto estiver em modo desenvolvimento. Em produção recomenda-se manter acesso administrativo externo (SSH, monitoramento, etc.) ou realizar um login autorizado.
-
 ## Testes
 
 Foram adicionados testes que cobrem:

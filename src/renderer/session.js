@@ -1,1 +1,0 @@
-/* legacy file intentionally left blank. Not used by the application. */
