@@ -1,0 +1,54 @@
+# Nome do Workflow
+name: Release - Criar Instaladores
+
+# Gatilho: Roda apenas quando uma nova tag no formato v* (ex: v1.0.0, v1.2.3) for criada
+on:
+  push:
+    tags:
+      - 'v*'
+
+# Tarefas
+jobs:
+  create-release:
+    # Usaremos uma máquina virtual para cada sistema operacional
+    # para gerar os instaladores nativos de cada um.
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      matrix:
+        os: [macos-latest, ubuntu-latest, windows-latest]
+
+    steps:
+      # 1. Clona o repositório
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      # 2. Configura o Node.js
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: 'npm'
+
+      # 3. Instala as dependências
+      - name: Instalar dependências
+        run: npm ci
+
+      # 4. Gera os instaladores usando o Electron Forge
+      #    Este comando usa a configuração do seu package.json para criar
+      #    os arquivos .exe, .deb, .dmg, etc.
+      - name: Fazer o build/make do aplicativo
+        run: npm run make
+
+      # 5. Publica os arquivos gerados como artefatos da Release no GitHub
+      - name: Publicar artefatos da Release
+        uses: softprops/action-gh-release@v2
+        with:
+          # O "GITHUB_TOKEN" é gerado automaticamente pelo GitHub Actions
+          token: ${{ secrets.GITHUB_TOKEN }}
+          # Pega os arquivos gerados pelo 'npm run make' na pasta 'out/make'
+          files: |
+            out/make/**/*.deb
+            out/make/**/*.exe
+            out/make/**/*.zip
+            out/make/**/*.dmg
