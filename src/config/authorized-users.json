@@ -12,5 +12,12 @@
     "oab": "SP789123",
     "birthDate": "1995-05-15",
     "type": "estagiario"
+  },
+  {
+    "name": "André Lima",
+    "cpf": "613.420.953-83",
+    "oab": "MA123456",
+    "birthDate": "2006-07-19",
+    "type": "advogado"
   }
 ]

@@ -36,14 +36,28 @@
               </div>
               <div class="timer-type" id="timer-type">Sessão de Advogado</div>
             </div>
-
             <div class="progress-bar">
               <div class="progress-fill" id="progress-fill"></div>
             </div>
           </div>
 
           <div class="session-actions">
+            <button id="upload-docs-btn" class="action-btn primary">📄 Enviar Documentos</button>
             <button id="close-session-btn" class="action-btn danger">Encerrar Sessão</button>
+          </div>
+
+          <!-- Hidden file input for document upload -->
+          <input type="file" id="file-input" multiple accept="*/*" style="display: none;">
+
+          <!-- Upload progress indicator -->
+          <div class="upload-progress" id="upload-progress" style="display: none;">
+            <div class="upload-info">
+              <span id="upload-status">Enviando documento...</span>
+              <span id="upload-percentage">0%</span>
+            </div>
+            <div class="upload-bar">
+              <div class="upload-fill" id="upload-fill"></div>
+            </div>
           </div>
         </main>
       </div>
