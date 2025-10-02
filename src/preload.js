@@ -25,3 +25,8 @@ contextBridge.exposeInMainWorld('electron', {
     };
   }
 });
+
+// API para sistema de arquivos
+contextBridge.exposeInMainWorld('electronAPI', {
+  invoke: (channel, ...args) => ipcRenderer.invoke(channel, ...args)
+});

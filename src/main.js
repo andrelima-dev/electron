@@ -1,7 +1,20 @@
+// Função para inicializar os serviços de arquivos
+async function initializeFileServices() {
+  const uploadsPath = path.join(__dirname, 'uploads');
+  if (!fileApiServer) {
+    fileApiServer = new FileApiServer(uploadsPath);
+    await fileApiServer.start();
+  }
+  if (!fileService) {
+    fileService = new FileService(uploadsPath);
+  }
+}
 const path = require('node:path');
 const { app, BrowserWindow, ipcMain, shell } = require('electron');
 const { createLogger } = require('./common/logger');
 const authService = require('./services/auth-service');
+const FileApiServer = require('./services/file-api-server');
+const FileService = require('./services/file-service');
 
 const isDev = process.env.NODE_ENV === 'development';
 
@@ -9,68 +22,10 @@ let mainWindow;
 let sessionWindow;
 let currentUser = null;
 let sessionTimer = null;
+let fileApiServer = null;
+let fileService = null;
 const log = createLogger('main');
 
-function releaseWorkstation(payload = {}) {
-  log.info('Liberando estação de trabalho', payload);
-  // Clear session data
-  currentUser = null;
-  if (sessionTimer) {
-    clearTimeout(sessionTimer);
-    sessionTimer = null;
-  }
-
-  // Close session window if exists
-  if (sessionWindow && !sessionWindow.isDestroyed()) {
-    sessionWindow.close();
-    sessionWindow = null;
-  }
-
-  // Show main window and return to login
-  if (mainWindow && !mainWindow.isDestroyed()) {
-    mainWindow.show();
-    mainWindow.loadURL(
-      `file://${path.join(__dirname, 'renderer', 'pages', 'login', 'index.html')}`
-    );
-
-    if (!isDev) {
-      mainWindow.setKiosk(true);
-    }
-  }
-
-  return { released: true };
-}
-
-function startSession(user) {
-  log.info('Iniciando sessão', { user: { name: user?.name, type: user?.type } });
-  currentUser = user;
-
-  // Auto logout timer based on user type (driven by config)
-  const { session } = authService.state.config || {};
-  const advMinutes = Number(session?.advogadoMinutes) > 0 ? Number(session.advogadoMinutes) : 180;
-  const estMinutes =
-    Number(session?.estagiarioMinutes) > 0 ? Number(session.estagiarioMinutes) : 120;
-  const sessionMinutes = user.type === 'advogado' ? advMinutes : estMinutes;
-  const sessionDuration = sessionMinutes * 60 * 1000; // minutes to milliseconds
-
-  if (sessionTimer) {
-    clearTimeout(sessionTimer);
-  }
-
-  sessionTimer = setTimeout(() => {
-    log.warn('Sessão expirada automaticamente');
-    releaseWorkstation({ reason: 'timeout' });
-  }, sessionDuration);
-
-  // Create session control window (small floating widget)
-  sessionWindow = createSessionWindow();
-
-  // Exit kiosk mode to allow normal computer usage
-  if (mainWindow && !isDev) {
-    mainWindow.setKiosk(false);
-    mainWindow.hide(); // Hide the main login window
-  }
-}
 
 /**
  * Cria a janela principal da aplicação.
@@ -195,25 +150,17 @@ function createSessionWindow() {
   return sessionWindow;
 }
 
-// Helper: registra um handler com try/catch e logging padronizado.
-function safeHandle(channel, handler) {
-  ipcMain.handle(channel, async (event, ...args) => {
-    try {
-      const result = await handler(event, ...args);
-      return result;
-    } catch (error) {
-      log.error(`IPC '${channel}' falhou`, { error: error?.message });
-      return { ok: false, success: false, error: error?.message || 'Erro inesperado.' };
-    }
-  });
-}
+// Funções auxiliares importadas dos helpers
+const { safeHandle } = require('./helpers/safeHandle');
+const { releaseWorkstation, startSession } = require('./helpers/sessionManager');
+
 
 // Single instance lock to avoid duplicates
 const gotLock = app.requestSingleInstanceLock();
 if (!gotLock) {
   app.quit();
 } else {
-  app.whenReady().then(() => {
+  app.whenReady().then(async () => {
     app.on('second-instance', () => {
       // Focus existing window if a second instance is attempted
       if (mainWindow) {
@@ -227,12 +174,29 @@ if (!gotLock) {
     safeHandle('auth:unlock', async (_event, credentials) => {
       const result = await authService.authenticate(credentials);
       if (result.success && result.user) {
-        startSession(result.user);
+        sessionWindow = startSession({
+          user: result.user,
+          log,
+          authService,
+          mainWindow,
+          isDev,
+          setCurrentUser: (u) => { currentUser = u; },
+          setSessionTimer: (t) => { sessionTimer = t; },
+          createSessionWindow
+        });
       }
       return result;
     });
 
-    safeHandle('auth:unlock-complete', (_, payload) => releaseWorkstation(payload));
+    safeHandle('auth:unlock-complete', (_, payload) => releaseWorkstation({
+      log,
+      mainWindow,
+      sessionWindow,
+      sessionTimer,
+      isDev,
+      setCurrentUser: (u) => { currentUser = u; },
+      setSessionTimer: (t) => { sessionTimer = t; }
+    }));
 
     safeHandle('window:resize', (event, { width, height }) => {
       const window = BrowserWindow.fromWebContents(event.sender);
@@ -291,6 +255,51 @@ if (!gotLock) {
       };
     });
 
+    // Handlers para o sistema de arquivos
+    safeHandle('files:get-api-info', () => {
+      if (!fileApiServer) {
+        return { success: false, error: 'Servidor de arquivos não inicializado' };
+      }
+      return {
+        success: true,
+        port: fileApiServer.getPort(),
+        baseUrl: `http://localhost:${fileApiServer.getPort()}`,
+        uploadsPath: fileApiServer.getUploadsPath()
+      };
+    });
+
+    safeHandle('files:get-stats', async () => {
+      if (!fileService) {
+        return { success: false, error: 'Serviço de arquivos não inicializado' };
+      }
+      const stats = await fileService.getStats();
+      return { success: true, stats };
+    });
+
+    safeHandle('files:search-by-tags', async (_, tags) => {
+      if (!fileService) {
+        return { success: false, error: 'Serviço de arquivos não inicializado' };
+      }
+      const files = await fileService.searchByTags(tags);
+      return { success: true, files };
+    });
+
+    safeHandle('files:update-tags', async (_, filename, tags) => {
+      if (!fileService) {
+        return { success: false, error: 'Serviço de arquivos não inicializado' };
+      }
+      const success = await fileService.updateFileTags(filename, tags);
+      return { success };
+    });
+
+    safeHandle('files:cleanup-old', async (_, daysOld = 30) => {
+      if (!fileService) {
+        return { success: false, error: 'Serviço de arquivos não inicializado' };
+      }
+      const removedFiles = await fileService.cleanupOldFiles(daysOld);
+      return { success: true, removedFiles };
+    });
+
     authService.on('context-changed', (context) => {
       BrowserWindow.getAllWindows().forEach((windowInstance) => {
         windowInstance.webContents.send('app:context-updated', {
@@ -301,6 +310,9 @@ if (!gotLock) {
     });
 
     authService.initialize();
+
+    // Inicializar serviços de arquivo
+    await initializeFileServices();
 
     createMainWindow();
 
@@ -318,6 +330,7 @@ app.on('window-all-closed', () => {
   }
 });
 
-app.on('will-quit', () => {
+app.on('will-quit', async () => {
   authService.shutdown();
+  await shutdownFileServices();
 });

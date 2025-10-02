@@ -1,8 +1,4 @@
-/**
- * ESLint configuration focused on clarity and consistency.
- * - Base: eslint:recommended
- * - Prettier: turns off conflicting formatting rules
- */
+
 module.exports = {
   root: true,
   env: {
@@ -16,9 +12,7 @@ module.exports = {
   plugins: ['prettier'],
   extends: ['eslint:recommended', 'plugin:prettier/recommended'],
   rules: {
-    // Keep console logs; this is a desktop app where logs are useful
     'no-console': 'off',
-    // Surface prettier issues as ESLint errors
     'prettier/prettier': 'error'
   },
   overrides: [

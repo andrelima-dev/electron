@@ -1,3 +1,4 @@
+
 # Modo quiosque com autenticação e sessão flutuante (OAB MA)
 
 Aplicação [Electron](https://www.electronjs.org/) para controle de acesso por **CPF**, **OAB** e **data de nascimento**, com janela de sessão flutuante (card) após o login. Em produção, inicia em modo quiosque (bloqueio). Após autenticação, a máquina fica liberada e um cartão flutuante transparente permanece no topo, exibindo o tempo de uso e permitindo encerrar a sessão.
@@ -124,6 +125,9 @@ No limite, a sessão é encerrada automaticamente e o app volta ao login.
 │   ├── config
 │   │   ├── app-config.json        # Configuração do provedor (local/remoto)
 │   │   └── authorized-users.json  # Lista de credenciais permitidas
+│   ├── helpers
+│   │   ├── safeHandle.js          # Helper para IPC seguro (try/catch centralizado)
+│   │   └── sessionManager.js      # Funções de controle de sessão e janela
 │   ├── services
 │   │   └── auth-service.js        # Serviço unificado de autenticação
 │   └── renderer
@@ -166,7 +170,8 @@ No arquivo `src/config/app-config.json`, você pode ajustar os tempos e avisos d
 
 ### Padrões de código e IPC seguro
 
-- Há um helper de IPC `safeHandle(channel, handler)` no `main.js` que centraliza try/catch e logging padronizado.
+- O helper de IPC `safeHandle(channel, handler)` agora está em `src/helpers/safeHandle.js` e centraliza try/catch e logging padronizado.
+- Funções de controle de sessão e janela foram movidas para `src/helpers/sessionManager.js`, deixando o `main.js` mais limpo e organizado.
 - O logger simples em `src/common/logger.js` pode ser substituído por `electron-log` sem alterar chamadas existentes.
 - O `common/config.js` valida o schema de `app-config.json` e aplica debounce no watcher; mensagens de erro são claras para acelerar o diagnóstico.
 
