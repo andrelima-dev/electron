@@ -79,7 +79,7 @@ O script `start` abre a janela principal com o formulário de liberação. Em de
 - **Windows**: `Alt + F4` (se permitido), `Ctrl + Alt + Del` para finalizar o processo manualmente ou autentique-se com um usuário autorizado.
 ## Testes
 
-Foram adicionados testes que cobrem:
+Foram adicionados testes que cobrem!:
 
 - Regras de CPF, OAB e data de nascimento;
 - Carregamento e busca de usuários locais;
