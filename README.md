@@ -1,5 +1,5 @@
 
-# Modo quiosque com autenticação e sessão flutuante (OAB MA)
+# Modo quiosque com autenticação e sessão flutuante (OABMA)
 
 Aplicação [Electron](https://www.electronjs.org/) para controle de acesso por **CPF**, **OAB** e **data de nascimento**, com janela de sessão flutuante (card) após o login. Em produção, inicia em modo quiosque (bloqueio). Após autenticação, a máquina fica liberada e um cartão flutuante transparente permanece no topo, exibindo o tempo de uso e permitindo encerrar a sessão.
 
@@ -228,7 +228,6 @@ npm run build
 ```
 
 Executável portátil (sem instalador):
-
 ```powershell
 npm run build:portable
 ```
